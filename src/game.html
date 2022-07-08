@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft 2D</title>
+</head>
+<body>
+<div id="info"></div>
+<div id="canvas" class="canvas"></div>
+</body>
+<style>
+    body {
+        background: #6E91CA;
+        overflow: hidden;
+        font-family: Calibri, serif;
+        user-select: none;
+    }
+
+    .canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .canvas > canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .shakeEffect {
+        animation: shakeEffect .4s ease-in-out;
+    }
+
+    @keyframes shakeEffect {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        12.25% {
+            transform: translate(10px, 10px);
+        }
+
+        37.25% {
+            transform: translate(-10px, -10px);
+        }
+
+        62.25% {
+            transform: translate(10px, 10px);
+        }
+
+        87.25% {
+            transform: translate(-10px, -10px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+</style>
+<script src="js/index.js"></script>
+</html>

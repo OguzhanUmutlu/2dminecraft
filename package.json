@@ -1,0 +1,23 @@
+{
+  "name": "2dminecraft",
+  "version": "1.0.0",
+  "description": "Online 2D Minecraft App made with Electron",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OguzhanUmutlu/2dminecraft.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OguzhanUmutlu/2dminecraft/issues"
+  },
+  "homepage": "https://github.com/OguzhanUmutlu/2dminecraft#readme",
+  "dependencies": {
+    "electron": "^19.0.8"
+  }
+}

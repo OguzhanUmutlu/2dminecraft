@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<title>Perlin noise</title>
+
+<script src="js/noise.js"></script>
+<script src="js/terrain-generator.js"></script>
+<script>
+    const terrain = new Generator({
+        seed: Math.random(), minHeight: 60, maxHeight: 90
+    });
+    const {map, added, deleted} = terrain.updateMap({
+        userPosition: [0, 0, 0],
+        renderDistance: 10,
+        unrenderOffset: 1
+    });
+    const mapArray = Generator.mapObjectToArray(map);
+    console.log(mapArray);
+</script>
