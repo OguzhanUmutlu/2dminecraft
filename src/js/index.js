@@ -1,93 +1,10 @@
 (async () => {
-    const RADIAN = Math.PI / 180;
-    window.canvas = document.createElement("canvas");
-    window.ctx = canvas.getContext("2d");
-    const canvasDIV = document.getElementById("canvas");
-    canvasDIV.appendChild(canvas);
-    window.ASSET_DICTIONARY = {
-        break_1: "break_1.png",
-        break_2: "break_2.png",
-        break_3: "break_3.png",
-        break_4: "break_4.png",
-        break_5: "break_5.png",
-        break_6: "break_6.png",
-        break_7: "break_7.png",
-        break_8: "break_8.png",
-        break_9: "break_9.png",
-        break_10: "break_10.png"
-    };
-    window.ASSET_PREFIX = "./assets/";
-    window.assets = {};
-    for (let i = 0; i < Object.keys(ASSET_DICTIONARY).length; i++) {
-        const key = Object.keys(ASSET_DICTIONARY)[i];
-        const img = assets[key] = new Image();
-        img.src = ASSET_PREFIX + ASSET_DICTIONARY[key];
-        await new Promise(resolve => img.onload = resolve);
-    }
-    const updateCanvasSize = () => {
-        if (canvas.width === window.innerWidth && canvas.height === window.innerHeight) return;
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    };
-    const requestAnimationFramePromise = () => new Promise((resolve) => requestAnimationFrame(resolve));
-    let __c = {};
-    const actClassOnCanvas = async (cl, r) => {
-        if (__c[cl]) clearInterval(__c[cl]);
-        canvasDIV.classList.remove(cl);
-        await requestAnimationFramePromise();
-        if (__c[cl]) clearInterval(__c[cl]);
-        canvasDIV.classList.add(cl);
-        if (r) __c[cl] = setTimeout(() => canvasDIV.classList.remove(cl), 300);
-    }
-    window.shakeCanvas = async () => await actClassOnCanvas("shakeEffect", false);
-    const readImagePart = (img, x, y, w, h) => {
-        const c = document.createElement("canvas");
-        c.width = w;
-        c.height = h;
-        const l = c.getContext("2d");
-        l.drawImage(img, x, y, w, h, 0, 0, w, h);
-        return c;
-    };
-    const searchSkinNameMc = async name => {
-        return await new Promise(resolve => {
-            const url = `https://namemc.com/search?q=${name}`;
-            fetch(url).then(res => {
-                res.text().then(html => {
-                    const dom = new DOMParser().parseFromString(html, "text/html");
-                    const el = Array.from(dom.querySelectorAll("body > main > div > div")).find(i => Array.from(i.classList).includes("order-md-0"));
-                    el.querySelector("div").remove();
-                    el.querySelector("div").remove();
-                    el.querySelector("h6").remove();
-                    Array.from(el.children).forEach(child => child.querySelector(".card-body")?.remove());
-                    el.children[el.children.length - 1].remove();
-                    el.innerHTML = Array.from(el.children).map(child => child.children[0].innerHTML).join("");
-                    resolve(Array.from(el.children).map(c => {
-                        const skinId = c.querySelector("img").src.split("s.namemc.com/2d/skin/face.png?id=")[1].split("&")[0];
-                        return {
-                            face: c.querySelector("img").src,
-                            skinId, skin: `https://s.namemc.com/i/${skinId}.png`,
-                            name: c.querySelector("a").innerHTML
-                                .replaceAll(" ", "")
-                                .replaceAll("\n", "")
-                                .replaceAll("\r", "")
-                        };
-                    }));
-                }).catch(() => resolve([]));
-            }).catch(() => resolve([]));
-        });
-    };
-
-    const searchSkinNameMcExact = async name => {
-        const result = await searchSkinNameMc(name);
-        return result.find(r => r.name === name);
-    };
-
-    const playerSkinFromNameMc = async name => {
+    await mainReady;
+    window.playerSkinFromNameMc = async name => {
         const res = await searchSkinNameMcExact(name);
         if (!res) return;
         return new HumanSkin(res.skin);
     };
-
     class Skin {
         constructor(url) {
             this.url = url;
@@ -176,15 +93,16 @@
     class Human extends Entity {
         headYaw = 0; // 0 - 360
         leftHandYaw = 0; // 0 - 90
-        leftHandYawVelTarget = 0;
+        leftHandYawVelTarget = 0; // 0 - 90
         rightHandYaw = 0; // 0 - 90
         rightHandYawVelTarget = 0;
         legYaw = 0; // 0 - 90
-        legYawVelTarget = 0;
-        handFullyUp = false;
+        legYawVelTarget = 0; // 0 - 90
         handUp = false;
-        walkingLegWay = 1;
         walkingOn = false;
+
+        handFullyUp = false;
+        walkingLegWay = 1;
 
         /**
          * @param {number} x
@@ -197,6 +115,13 @@
 
         drawSkin() {
             if (!this.skin.loaded) return;
+            this.headYaw = this.headYaw % 360;
+            this.leftHandYaw = this.leftHandYaw % 90;
+            this.leftHandYawVelTarget = this.leftHandYawVelTarget % 90;
+            this.rightHandYaw = this.rightHandYaw % 90;
+            this.rightHandYawVelTarget = this.rightHandYawVelTarget % 90;
+            this.legYaw = this.legYaw % 90;
+            this.legYawVelTarget = this.legYawVelTarget % 90;
             if (!Math.floor(this.rightHandYaw)) this.rightHandYaw = 0;
             if (!Math.floor(this.leftHandYaw)) this.leftHandYaw = 0;
             if (!Math.floor(this.headYaw)) this.headYaw = 0;
@@ -236,7 +161,6 @@
             else if (this.legYaw > 60) this.walkingLegWay = -1;
             const x = this.x + camera.x;
             const y = this.y + camera.y;
-            this.headYaw = this.headYaw % 360;
             const isRight = (this.headYaw > -90 && this.headYaw < 90);
             this.skin.arms.draw[isRight ? "left" : "right"]({
                 ctx, middle: true, x: x - 8, y: y + 22, width: 16, height: 48, // 4 12

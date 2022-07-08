@@ -6,11 +6,21 @@
 </head>
 <body>
 <h1>Minecraft 2D</h1>
+<div class="buttons">
+    <div data-button="enabled" class="button">Singleplayer</div>
+    <div data-button="enabled" class="button">Multiplayer</div>
+    <div data-button="enabled" class="button">Settings</div>
+</div>
 </body>
 <style>
     @font-face {
-        font-family: "Minecrafter";
-        src: url("./fonts/minecrafter/Minecrafter.Alt.ttf") format("truetype");
+        font-family: "MinecraftEvenings";
+        src: url("./fonts/minecraft_evenings/Minecraft-Evenings.ttf") format("truetype");
+    }
+
+    @font-face {
+        font-family: "Minecraftia";
+        src: url("./fonts/minecraftia/Minecraftia-Regular.ttf") format("truetype");
     }
 
     body {
@@ -24,7 +34,7 @@
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        font-family: "Minecrafter", serif;
+        font-family: MinecraftEvenings, serif;
         font-size: 5em;
         color: #fff;
         text-align: center;
@@ -32,8 +42,77 @@
         padding: 0;
         text-shadow: 0 0 10px #000;
     }
-</style>
-<script>
 
+    .buttons {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .buttons > div {
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .button_text {
+        font-family: Minecraftia, serif;
+        position: absolute;
+        margin-left: 50%;
+        color: white;
+        transform: translate(-50%, -100%);
+    }
+</style>
+<script src="js/main.js"></script>
+<script>
+    (async () => {
+        await mainReady;
+        for (let b of document.querySelectorAll("[data-button]")) {
+            if (!(b instanceof HTMLDivElement)) return;
+            const text = b.innerHTML;
+            b.innerHTML = "";
+            const disabled = b.getAttribute("data-button") === "disabled";
+            const mkCanvas = buttonType => {
+                const cO = assetsCropped.widgets["button_" + buttonType];
+                const size = {w: cO.width * 2, h: cO.height * 2};
+                const c = document.createElement("canvas");
+                c.width = size.w;
+                c.height = size.h;
+                const l = c.getContext("2d");
+                l.drawImage(cO, 0, 0, size.w, size.h);
+                c.style.display = "none";
+                c.setAttribute("data-button-type", buttonType);
+                b.appendChild(c);
+                return c;
+            }
+            mkCanvas("enabled");
+            mkCanvas("disabled");
+            mkCanvas("hover");
+            let canvasStatus = "enabled";
+            const updateCanvasDisplay = () => {
+                if(disabled) canvasStatus = "disabled";
+                b.querySelectorAll("canvas").forEach(c => {
+                    c.style.display = c.getAttribute("data-button-type") === canvasStatus ? "block" : "none";
+                });
+            };
+            updateCanvasDisplay();
+            const div = document.createElement("div");
+            div.innerHTML = text;
+            div.classList.add("button_text");
+            b.appendChild(div);
+            b.addEventListener("mouseenter", () => {
+                canvasStatus = "hover";
+                updateCanvasDisplay();
+            });
+            b.addEventListener("mouseleave", () => {
+                canvasStatus = "enabled";
+                updateCanvasDisplay();
+            });
+            addEventListener("blur", () => {
+                canvasStatus = "enabled";
+                updateCanvasDisplay();
+            });
+        }
+    })();
 </script>
 </html>

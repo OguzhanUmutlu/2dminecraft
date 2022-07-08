@@ -13,6 +13,7 @@ Online 2D Minecraft App made with Electron
 
 ### Mechanics
 - Lights
+- Shadows
 - Collisions
 - Physics
 - Mobs
@@ -24,7 +25,7 @@ Online 2D Minecraft App made with Electron
 - Crafting Inventory
 - Furnace Inventory
 - Custom Inventory
-- Day/Night Cycle
+- Time
 - Day/Night Colors
 - Weather
 - Tick system
@@ -50,6 +51,16 @@ Online 2D Minecraft App made with Electron
 - Chunk rendering
 - Texture packs
 - Realms(maybe)
+- Redstone
+- Natural structures
+- Swimming
+- Crouching
+- Sprinting
+- Jumping
+- Falling
+- Health
+- Hunger
+- Armor
 
 ### Skin and animations
 - ~~Player~~
