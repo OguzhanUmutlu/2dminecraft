@@ -4,9 +4,10 @@ Online 2D Minecraft App made with Electron
 ## Formulas
 
 - Drag applied before acceleration:
-<img src="https://wikimedia.org/api/rest_v1/media/math/render/png/fd9a856ccd8c31f229c9d1c5ce234bc8f69f4d4e">
-- Drag applied after acceleration
-<img src="https://wikimedia.org/api/rest_v1/media/math/render/png/832c906ce842c0fb9fc493cb3098d1c2bd889f54">
+    - finalVelocity = ((initialVelocity - acceleration) * ((1 - drag) ** ticksPassed)) - (acceleration * (1 - (1 - drag) ** ticksPassed) / drag)
+
+- Drag applied after acceleration:
+    - finalVelocity = (initialVelocity * (1 - drag) ** ticksPassed) - (acceleration * (1 - drag) * (1 - (1 - drag) ** ticksPassed) / drag)
 
 ## TODO
 
